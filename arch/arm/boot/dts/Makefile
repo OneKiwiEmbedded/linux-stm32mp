@@ -1212,6 +1212,8 @@ dtb-$(CONFIG_ARCH_STM32) += \
 	stm32h750i-art-pi.dtb \
 	stm32mp135f-dk.dtb \
 	stm32mp135f-dk-a7-examples.dtb \
+	stm32mp135d-dk.dtb \
+	stm32mp135d-dk-a7-examples.dtb \
 	stm32mp13xxae-som-r1x256v10.dtb \
 	stm32mp13xxae-som-r1x256v10-a7-examples.dtb \
 	stm32mp135x-256m.dtb \
