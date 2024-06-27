@@ -6,11 +6,11 @@
 
 /dts-v1/;
 
-#include "stm32mp135x-512m.dts"
+#include "stm32mp13xxae-som.dts"
 
 / {
-	model = "STMicroelectronics STM32MP135F-DK configured to run Linux A7 examples";
-	compatible = "st,stm32mp135x-512m-a7-examples", "st,stm32mp135x-512m", "st,stm32mp135";
+	model = "OneKiwi STM32MP13xxAE SOM v1.0 configured to run Linux A7 examples";
+	compatible = "st,stm32mp13xxae-som-a7-examples", "st,stm32mp13xxae-som", "st,stm32mp135";
 
 	dmic0: dmic-0 {
 		compatible = "dmic-codec";
