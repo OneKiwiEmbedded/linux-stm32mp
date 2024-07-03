@@ -38,10 +38,6 @@
 		};
 	};
 
-/*
- * Sound card to support external digital microphones connected
- * on the expansion connector.
- */
 	sound {
 		compatible = "audio-graph-card";
 		label = "STM32MP13-DK";
