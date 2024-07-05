@@ -9,11 +9,35 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/leds/common.h>
-#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
+//#include <dt-bindings/regulator/st,stm32mp13-regulator.h>
 #include <dt-bindings/rtc/rtc-stm32.h>
 #include "stm32mp135.dtsi"
 #include "stm32mp13xf.dtsi"
-#include "stm32mp13-kiwi-pin.dtsi"
+#include "stm32mp13-pinctrl.dtsi"
+
+&pinctrl {
+	/* sdmmc2_d47 */
+	sdmmc2_d47_pins_a: sdmmc2-d47-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 0, AF10)>, /* SDMMC2_D4 */
+				 <STM32_PINMUX('B', 9, AF10)>, /* SDMMC2_D5 */
+				 <STM32_PINMUX('C', 6, AF10)>, /* SDMMC2_D6 */
+				 <STM32_PINMUX('C', 7, AF10)>; /* SDMMC2_D7 */
+			slew-rate = <1>;
+			drive-push-pull;
+			bias-pull-up;
+		};
+	};
+
+	sdmmc2_d47_sleep_pins_a: sdmmc2-d47-sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 0, ANALOG)>, /* SDMMC2_D4 */
+				 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC2_D5 */
+				 <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC2_D6 */
+				 <STM32_PINMUX('C', 7, ANALOG)>; /* SDMMC2_D7 */
+		};
+	};
+};
 
 / {
 	model = "OneKiwi STM32MP13xxAE SOM v1.0";
@@ -21,9 +45,6 @@
 
 	aliases {
 		serial0 = &uart4;
-		serial1 = &usart1;
-		serial2 = &uart8;
-		serial3 = &usart2;
 	};
 
 	chosen {
@@ -38,6 +59,7 @@
 			status = "disabled";
 		};
 	};
+	
 	/*
 	clocks {
 		clk_ext_camera: clk-ext-camera {
@@ -69,6 +91,7 @@
 		};
 	};
 
+	/*
 	gpio-keys {
 		compatible = "gpio-keys";
 
@@ -77,7 +100,7 @@
 			linux,code = <BTN_1>;
 			gpios = <&gpioa 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 		};
-	};
+	};*/
 
 	leds {
 		compatible = "gpio-leds";
@@ -115,6 +138,7 @@
 		regulator-always-on;
 	};
 
+	/*
 	wake_up {
 		compatible = "gpio-keys";
 		status = "okay";
@@ -125,7 +149,7 @@
 			interrupts-extended = <&optee 0>;
 			status = "okay";
 		};
-	};
+	};*/
 };
 
 &adc_1 {
@@ -178,7 +202,7 @@
 	pinctrl-1 = <&i2c1_sleep_pins_a>;
 	i2c-scl-rising-time-ns = <96>;
 	i2c-scl-falling-time-ns = <3>;
-	clock-frequency = <1000000>;
+	clock-frequency = <400000>;
 	status = "okay";
 	/* spare dmas for other usage */
 	/delete-property/dmas;
