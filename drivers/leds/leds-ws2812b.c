@@ -113,16 +113,6 @@ static const struct of_device_id ws2812b_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, ws2812b_of_match);
 
-static struct spi_driver ws2812b_spi_driver = {
-	.probe		= ws2812b_probe,
-	.remove		= ws2812b_remove,
-	.id_table	= ws2812b_spi_ids,
-	.driver = {
-		.name		= "leds_ws2812b",
-		.of_match_table = ws2812b_of_match,
-	},
-};
-
 static int ws2812b_probe(struct spi_device *spi)
 {
     const void *match = device_get_match_data(&spi->dev);
@@ -227,6 +217,15 @@ static void ws2812b_remove(struct spi_device *spi)
 
 }
 
+static struct spi_driver ws2812b_spi_driver = {
+	.probe		= ws2812b_probe,
+	.remove		= ws2812b_remove,
+	.id_table	= ws2812b_spi_ids,
+	.driver = {
+		.name		= "leds_ws2812b",
+		.of_match_table = ws2812b_of_match,
+	},
+};
 
 module_spi_driver(ws2812b_spi_driver);
 MODULE_ALIAS("spi:leds_ws2812b");
