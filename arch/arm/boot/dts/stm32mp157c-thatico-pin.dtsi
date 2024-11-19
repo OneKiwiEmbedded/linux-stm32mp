@@ -43,6 +43,25 @@
 				 <STM32_PINMUX('D', 3, ANALOG)>; /* SDMMC2_D7 */
 		};
 	};
+
+	spi6_pins_x: spi6-x {
+		pins {
+			pinmux = <STM32_PINMUX('A', 5, AF8)>, /* SPI6_SCK */
+					 <STM32_PINMUX('A', 6, AF8)>, /* SPI6_MISO */
+					 <STM32_PINMUX('A', 7, AF8)>; /* SPI6_MOSI */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <1>;
+		};
+	};
+
+	spi6_sleep_pins_x: spi6-sleepx {
+		pins {
+			pinmux = <STM32_PINMUX('A', 5, ANALOG)>, /* SPI6_SCK */
+					 <STM32_PINMUX('A', 6, ANALOG)>, /* SPI6_MISO */
+					 <STM32_PINMUX('A', 7, ANALOG)>; /* SPI6_MOSI */
+		};
+	};
 };
 &pinctrl_z {
 	

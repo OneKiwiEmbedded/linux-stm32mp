@@ -261,6 +261,13 @@ config LEDS_NET48XX
 	  This option enables support for the Soekris net4801 and net4826 error
 	  LED.
 
+config LEDS_WS2812B
+    tristate "neopixel support over spi"
+    depends on LEDS_CLASS
+    depends on SPI_MASTER
+    help
+	  This option enables support for neopixels via spi.
+	  
 config LEDS_WRAP
 	tristate "LED Support for the WRAP series LEDs"
 	depends on LEDS_CLASS
