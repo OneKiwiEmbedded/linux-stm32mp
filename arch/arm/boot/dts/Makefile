@@ -1264,6 +1264,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
 	stm32mp157f-ev1-a7-examples.dtb \
 	stm32mp157f-ev1-m4-examples.dtb \
 	stm32mp15xxab-som-v11.dtb \
+	stm32mp157aaa-sohoa-v13.dtb \
 	stm32mp157c-thatico.dtb
 
 dtb-$(CONFIG_MACH_SUN4I) += \
