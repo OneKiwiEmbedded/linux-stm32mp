@@ -30,6 +30,8 @@ dtb-$(CONFIG_ARCH_STM32) += \
 	stm32h750i-art-pi.dtb \
 	stm32mp135f-dk.dtb \
 	stm32mp135f-dk-a7-examples.dtb \
+	stm32mp131dae-onekiwi.dtb \
+	stm32mp131dae-onekiwi-a7-examples.dtb \
 	stm32mp151a-prtt1a.dtb \
 	stm32mp151a-prtt1c.dtb \
 	stm32mp151a-prtt1s.dtb \
