@@ -16,6 +16,23 @@
 #include "stm32mp13-pinctrl.dtsi"
 
 &pinctrl {
+	i2c4_pins_x: i2c4_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 7, AF6)>, /* I2C4_SDA */
+					 <STM32_PINMUX('E', 15, AF6)>; /* I2C4_SCL */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c4_sleep_pins_x: i2c3-sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 15, ANALOG)>, /* I2C5_SCL */
+					 <STM32_PINMUX('B', 7, ANALOG)>; /* I2C5_SDA */
+		};
+	};
+
 	sdmmc2_d47_pins_a: sdmmc2-d47-0 {
 		pins {
 			pinmux = <STM32_PINMUX('F', 0, AF10)>, /* SDMMC2_D4 */
@@ -34,6 +51,29 @@
 				 <STM32_PINMUX('B', 9, ANALOG)>, /* SDMMC2_D5 */
 				 <STM32_PINMUX('C', 6, ANALOG)>, /* SDMMC2_D6 */
 				 <STM32_PINMUX('C', 7, ANALOG)>; /* SDMMC2_D7 */
+		};
+	};
+
+	i2s2_pins_x: i2s2_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 5, AF5)>, /* I2S2_SDI */
+					 <STM32_PINMUX('B', 13, AF5)>, /* I2S2_WS */
+					 <STM32_PINMUX('G', 11, AF5)>, /* I2S2_MCK */
+					 <STM32_PINMUX('H', 6, AF5)>, /* I2S2_CK */
+					 <STM32_PINMUX('H', 10, AF6)>; /* I2S2_SDO */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <1>;
+		};
+	};
+
+	i2s2_pins_sleep_x: i2s2_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 5, ANALOG)>, /* I2S2_SDI */
+					 <STM32_PINMUX('B', 13, ANALOG)>, /* I2S2_WS */
+					 <STM32_PINMUX('G', 11, ANALOG)>, /* I2S2_MCK */
+					 <STM32_PINMUX('H', 6, ANALOG)>, /* I2S2_CK */
+					 <STM32_PINMUX('H', 10, ANALOG)>; /* I2S2_SDO */
 		};
 	};
 };
@@ -59,8 +99,14 @@
 		};
 	};
 	
-	/*
+	
 	clocks {
+		clk_ext_audio: clk-ext-audio {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <12000000>;
+		};
+		/*
 		clk_ext_camera: clk-ext-camera {
 			#clock-cells = <0>;
 			compatible = "fixed-clock";
@@ -71,8 +117,8 @@
 			#clock-cells = <0>;
 			compatible = "fixed-clock";
 			clock-frequency = <24000000>;
-		};
-	};*/
+		};*/
+	};
 
 	memory@c0000000 {
 		device_type = "memory";
@@ -137,6 +183,43 @@
 		regulator-always-on;
 	};
 
+	v1v8: v1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-always-on;
+	};
+
+	sound: audio {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&codec_dai>;
+		simple-audio-card,frame-master = <&codec_dai>;
+		simple-audio-card,mclk-fs = <256>;
+
+		simple-audio-card,widgets =
+					"Microphone", "Microphone Jack",
+					"Headphone", "Headphone Jack",
+					"Speaker", "Speaker Ext",
+					"Line", "Line In Jack";
+		simple-audio-card,routing =
+				"MIC_IN", "Microphone Jack",
+				"Microphone Jack", "Mic Bias",
+				"Headphone Jack", "HP_OUT";
+
+		cpu_dai: simple-audio-card,cpu {
+			sound-dai = <&i2s2>;
+		};
+
+		codec_dai: simple-audio-card,codec {
+			sound-dai = <&sgtl5000>;
+			bitclock-master;
+			frame-master;
+			system-clock-frequency = <12000000>;
+		};
+	};
+
 	/*
 	wake_up {
 		compatible = "gpio-keys";
@@ -195,6 +278,57 @@
 
 &dts {
 	status = "okay";
+};
+
+&i2s2 {
+	#clock-cells = <0>;
+	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
+	clock-names = "pclk", "i2sclk", "x8k", "x11k";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2s2_pins_x>;
+	pinctrl-1 = <&i2s2_pins_sleep_x>;
+	i2s-ioswp;
+	status = "okay";
+
+    i2s2_port: port {
+        i2s2_endpoint: endpoint {
+            remote-endpoint = <&sgtl5000_endpoint>;
+        };
+    };
+};
+
+&i2c4 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c4_pins_x>;
+	pinctrl-1 = <&i2c4_sleep_pins_x>;
+	i2c-scl-rising-time-ns = <300>;
+	i2c-scl-falling-time-ns = <300>;
+	clock-frequency = <400000>;
+	status = "okay";
+	/* spare dmas for other usage */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+
+	sgtl5000: audio-codec@a {
+		status = "okay";
+		#sound-dai-cells = <0>;
+		compatible = "fsl,sgtl5000";
+		reg = <0xa>;
+		VDDIO-supply = <&vdd>;
+		VDDA-supply = <&vdd>;
+		VDDD-supply = <&v1v8>;
+		clocks = <&clk_ext_audio>;
+		port {
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
+            port@0 {
+                reg = <0>;
+                sgtl5000_endpoint: endpoint {
+					remote-endpoint = <&i2s2_endpoint>;
+                };
+		   };
+		};
+	};
 };
 
 /*
