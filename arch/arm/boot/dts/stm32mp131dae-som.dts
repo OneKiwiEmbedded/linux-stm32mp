@@ -358,6 +358,9 @@
 
 	aliases {
 		serial0 = &uart4;
+		serial1 = &usart1;
+		serial2 = &usart2;
+		serial3 = &uart5;
 		i2c1 = &i2c4;
 		i2c2 = &i2c1;
 	};
