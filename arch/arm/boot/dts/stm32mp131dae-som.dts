@@ -523,29 +523,31 @@
 	};*/
 
 	sound: audio {
+		status = "okay";
 		compatible = "simple-audio-card";
 		simple-audio-card,format = "i2s";
-
-		simple-audio-card,bitclock-master = <&cpu_dai>;
-		simple-audio-card,frame-master = <&cpu_dai>;
+		simple-audio-card,name = "ES8388-SOUND-CARD";
+		simple-audio-card,mclk-fs = <256>;
+        simple-audio-card,bitclock-master = <&cpu_dai>;
+        simple-audio-card,frame-master = <&cpu_dai>;
 
 		simple-audio-card,widgets =
-			"Microphone", "Mic Jack",
-			"Headphone", "HP Jack",
-			"Speaker", "Ext Speaker";
-
+			"Headphone", "Headphone Jack",
+			"Microphone", "Mic Jack";
 		simple-audio-card,routing =
+			"Headphone Jack",	"LOUT1",
+			"Headphone Jack",	"ROUT1",
 			"LINPUT1", "Mic Jack",
-			"RINPUT1", "Mic Jack",
-			"HP Jack", "HPLOUT",
-			"HP Jack", "HPROUT";
+			"RINPUT1", "Mic Jack";
 
-		cpu_dai: simple-audio-card,cpu {
-			sound-dai = <&i2s2>;
+		cpu_dai:simple-audio-card,cpu {
+				system-clock-frequency = <11289600>;
+				sound-dai = <&i2s2>;
 		};
 
-		codec_dai: simple-audio-card,codec {
-			sound-dai = <&es8388>;
+		codec_dai:simple-audio-card,codec {
+				sound-dai = <&es8328_codec>;
+				system-clock-frequency = <11289600>;
 		};
 	};
 
