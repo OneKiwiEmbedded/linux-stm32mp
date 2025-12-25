@@ -613,6 +613,19 @@
 	pinctrl-1 = <&dcmipp_sleep_pins_a>;
 };*/
 
+&dma1 {
+    status = "okay";
+};
+
+&dma2 {
+    status = "okay";
+};
+
+&dmamux1 {
+    status = "okay";
+    dma-requests = <128>; // Tăng số lượng DMA requests
+};
+
 &dts {
 	status = "okay";
 };
@@ -627,6 +640,10 @@
 	#sound-dai-cells = <0>;
 	//i2s-ioswp;
 	status = "okay";
+
+	dmas = <&dmamux1 39 0x400 0x01>,
+           <&dmamux1 40 0x400 0x01>;
+    dma-names = "rx", "tx";
 
     //i2s2_port: port {
         //i2s2_endpoint: endpoint {
