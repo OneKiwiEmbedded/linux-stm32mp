@@ -386,6 +386,12 @@
 			compatible = "fixed-clock";
 			clock-frequency = <12000000>;
 		};
+
+		clk_ext_sound: clk-ext-sound {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <11289600>;
+		};
 	};
 
 	memory@c0000000 {
@@ -551,12 +557,6 @@
 		};
 	};
 
-	clk_audio: clk_audio {
-		compatible = "fixed-clock";
-		#clock-cells = <0>;
-		clock-frequency = <11289600>;
-	};
-
 	/*
 	wake_up {
 		compatible = "gpio-keys";
@@ -618,21 +618,22 @@
 };
 
 &i2s2 {
-	#clock-cells = <0>;
-	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
-	clock-names = "pclk", "i2sclk", "x8k", "x11k";
+	//#clock-cells = <0>;
+	//clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
+	//clock-names = "pclk", "i2sclk", "x8k", "x11k";
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&i2s2_pins_x>;
 	pinctrl-1 = <&i2s2_pins_sleep_x>;
-	i2s-ioswp;
+	#sound-dai-cells = <0>;
+	//i2s-ioswp;
 	status = "okay";
 
-    i2s2_port: port {
-        i2s2_endpoint: endpoint {
+    //i2s2_port: port {
+        //i2s2_endpoint: endpoint {
             //remote-endpoint = <&sgtl5000_endpoint>;
-			remote-endpoint = <&es8388_endpoint>;
-        };
-    };
+			//remote-endpoint = <&es8388_endpoint>;
+        //};
+    //};
 };
 
 &i2c1 {
@@ -690,25 +691,12 @@
 		};
 	};*/
 
-	es8388: audio-codec@11 {
-		compatible = "everest,es8328";
+	es8388: es8328@11 {
+		compatible = "everest,es8388";
+		clocks = <&clk_ext_sound>;
+		clock-names = "mclk";
 		#sound-dai-cells = <0>;
 		reg = <0x11>;
-
-		AVDD-supply = <&vdd>;
-		DVDD-supply = <&vdd>;
-		PVDD-supply = <&vdd>;
-		HPVDD-supply = <&vdd>;
-
-		
-		clocks = <&clk_audio>;
-		status = "okay";
-
-		port {
-			es8388_endpoint: endpoint {
-				remote-endpoint = <&i2s2_endpoint>;
-			};
-		};
 	};
 
 };
@@ -757,7 +745,6 @@
 };
 
 /* eMMC */
-
 &sdmmc2 {
 	pinctrl-names = "default", "opendrain", "sleep";
 	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a &sdmmc2_clk_pins_a>;
