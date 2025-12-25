@@ -546,7 +546,7 @@
 		};
 
 		codec_dai:simple-audio-card,codec {
-				sound-dai = <&es8328_codec>;
+				sound-dai = <&es8388>;
 				system-clock-frequency = <11289600>;
 		};
 	};
