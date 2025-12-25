@@ -619,8 +619,8 @@
 
 &i2s2 {
 	//#clock-cells = <0>;
-	//clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
-	//clock-names = "pclk", "i2sclk", "x8k", "x11k";
+	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&scmi_clk CK_SCMI_PLL3_Q>, <&scmi_clk CK_SCMI_PLL3_R>;
+	clock-names = "pclk", "i2sclk", "x8k", "x11k";
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&i2s2_pins_x>;
 	pinctrl-1 = <&i2s2_pins_sleep_x>;
@@ -693,10 +693,14 @@
 
 	es8388: es8328@11 {
 		compatible = "everest,es8388";
+		reg = <0x11>;
 		clocks = <&clk_ext_sound>;
 		clock-names = "mclk";
 		#sound-dai-cells = <0>;
-		reg = <0x11>;
+		DVDD-supply = <&vdd>;
+		AVDD-supply = <&vdd>;
+		PVDD-supply = <&vdd>;
+		HPVDD-supply = <&vdd>;
 	};
 
 };
