@@ -363,6 +363,8 @@
 		serial3 = &uart5;
 		i2c1 = &i2c4;
 		i2c2 = &i2c1;
+		i2c3 = &i2c2;
+		i2c4 = &i2c3;
 	};
 
 	chosen {
@@ -490,6 +492,7 @@
 		regulator-always-on;
 	};
 
+	/*
 	sound: audio {
 		compatible = "simple-audio-card";
 		simple-audio-card,format = "i2s";
@@ -517,7 +520,35 @@
 			frame-master;
 			system-clock-frequency = <12000000>;
 		};
+	};*/
+
+	sound: audio {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+
+		simple-audio-card,bitclock-master = <&cpu_dai>;
+		simple-audio-card,frame-master = <&cpu_dai>;
+
+		simple-audio-card,widgets =
+			"Microphone", "Mic Jack",
+			"Headphone", "HP Jack",
+			"Speaker", "Ext Speaker";
+
+		simple-audio-card,routing =
+			"LINPUT1", "Mic Jack",
+			"RINPUT1", "Mic Jack",
+			"HP Jack", "HPLOUT",
+			"HP Jack", "HPROUT";
+
+		cpu_dai: simple-audio-card,cpu {
+			sound-dai = <&i2s2>;
+		};
+
+		codec_dai: simple-audio-card,codec {
+			sound-dai = <&es8388>;
+		};
 	};
+
 
 	/*
 	wake_up {
@@ -591,7 +622,8 @@
 
     i2s2_port: port {
         i2s2_endpoint: endpoint {
-            remote-endpoint = <&sgtl5000_endpoint>;
+            //remote-endpoint = <&sgtl5000_endpoint>;
+			remote-endpoint = <&es8388_endpoint>;
         };
     };
 };
@@ -629,6 +661,7 @@
 	/delete-property/dmas;
 	/delete-property/dma-names;
 
+	/*
 	sgtl5000: audio-codec@a {
 		status = "okay";
 		#sound-dai-cells = <0>;
@@ -648,7 +681,27 @@
                 };
 		   };
 		};
+	};*/
+
+	es8388: audio-codec@11 {
+		compatible = "everest,es8328";
+		reg = <0x11>;
+
+		AVDD-supply = <&vdd>;
+		DVDD-supply = <&vdd>;
+		PVDD-supply = <&vdd>;
+
+		#sound-dai-cells = <0>;
+
+		status = "okay";
+
+		port {
+			es8388_endpoint: endpoint {
+				remote-endpoint = <&i2s2_endpoint>;
+			};
+		};
 	};
+
 };
 
 /*
@@ -695,24 +748,6 @@
 };
 
 /* eMMC */
-/*
-&sdmmc2 {
-	pinctrl-names = "default", "opendrain", "sleep";
-	pinctrl-0 = <&sdmmc2_b8_pins_a &sdmmc2_clk_pins_a>;
-	pinctrl-1 = <&sdmmc2_b8_od_pins_a &sdmmc2_clk_pins_a>;
-	pinctrl-2 = <&sdmmc2_b8_sleep_pins_a>;
-	non-removable;
-	no-sd;
-	no-sdio;
-	// st,neg-edge;
-	bus-width = <8>;
-	vmmc-supply = <&vdd>;
-	vqmmc-supply = <&vdd>;
-	// mmc-pwrseq = <&wifi_pwrseq>;
-	#address-cells = <1>;
-	#size-cells = <0>;
-	status = "okay";
-};*/
 
 &sdmmc2 {
 	pinctrl-names = "default", "opendrain", "sleep";
